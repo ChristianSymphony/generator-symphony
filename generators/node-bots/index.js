@@ -10,7 +10,7 @@ module.exports = class extends Generator {
         type: 'list',
         name: 'node_bot_tpl',
         message: 'Which template do you want to start with',
-        choices: ['Request/Reply', 'NLP Based Trade Order', 'Dev Meetup AWS']
+        choices: ['Request/Reply', 'NLP Based Trade Order', 'Dev Meetup AWS', 'ExpenseBot (using Symphony Elements)']
       }
     ]).then((answers) => {
       answers.application_name = this.options.initPrompts.application_name
@@ -22,11 +22,11 @@ module.exports = class extends Generator {
       answers.botemail = this.options.initPrompts.botemail
       answers.encryption = this.options.initPrompts.encryption
       let log_text = ('* Generating ' +
-                this.options.initPrompts.application_type.italic +
-                ' ' +
-                this.options.initPrompts.application_lang.italic +
-                ' code from ' +
-                answers.node_bot_tpl.italic + ' template...').bold
+        this.options.initPrompts.application_type.italic +
+        ' ' +
+        this.options.initPrompts.application_lang.italic +
+        ' code from ' +
+        answers.node_bot_tpl.italic + ' template...').bold
       console.log(log_text.bgRed.white)
 
       if (answers.encryption.startsWith('RSA')) {
@@ -113,6 +113,27 @@ module.exports = class extends Generator {
         this.fs.copy(
           this.templatePath('node/bots/nlp-based/lib'),
           this.destinationPath('lib')
+        )
+      } else if (answers.node_bot_tpl === 'ExpenseBot (using Symphony Elements)') {
+        this.fs.copyTpl(
+          this.templatePath('node/bots/expense-bot/index.js'),
+          this.destinationPath('index.js'),
+          answers
+        )
+        this.fs.copyTpl(
+          this.templatePath('node/bots/expense-bot/Helpers.js'),
+          this.destinationPath('Helpers.js'),
+          answers
+        )
+        this.fs.copyTpl(
+          this.templatePath('node/bots/expense-bot/package.json'),
+          this.destinationPath('package.json'),
+          answers
+        )
+        this.fs.copyTpl(
+          this.templatePath('node/bots/expense-bot/config.json'),
+          this.destinationPath('config.json'),
+          answers
         )
       }
 
